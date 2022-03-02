@@ -4,21 +4,39 @@ name: Continuous Integration
 
 on:
   push:
-    branches: [ main, master ]
-  pull_request:
-    branches: [ main, master ]
-  workflow_dispatch:
+    branches: [ gh-test ]
+
 
 jobs:
   ci:
     name: CI
     runs-on: ubuntu-latest
-    env:
-      DOCKER_BUILDKIT: "1"
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Lint using pylint
-      run: docker build . --target lint
-    - name: Test using pytest
-      run: docker build . --target unit-test
+      
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.7
+      
+    - name: Setup Conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3.7
+        mamba-version: "*"
+        channels: conda-forge
+        channel-priority: true
+        
+    - name: Update Conda Environment
+      run: mamba env create -f environment.yml
+      
+    - name: Install Python package
+      run: |
+        conda activate taswira
+        python -m pip install -e .
+      
+    - name: Test
+      run: |
+        python -m pytest
