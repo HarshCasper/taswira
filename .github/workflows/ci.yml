@@ -45,13 +45,13 @@ jobs:
       run: mamba env update -n taswira -f environment.yml
       
     - name: Install Python package
-      shell: bash
+      shell: bash -l {0}
       run: |
         conda activate taswira
         python -m pip install -e .
       
     - name: Test
-      shell: bash
+      shell: bash -l {0}
       run: |
         conda activate taswira
         python -m pytest
