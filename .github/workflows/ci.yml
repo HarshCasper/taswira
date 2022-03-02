@@ -33,6 +33,7 @@ jobs:
       run: mamba env create -f environment.yml
       
     - name: Install Python package
+      shell: bash -l {0}
       run: |
         conda activate taswira
         python -m pip install -e .
